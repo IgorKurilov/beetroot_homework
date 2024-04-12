@@ -3,6 +3,7 @@ import datetime
 import random
 import logging
 import csv
+import json
 
 # додамо логування
 logging.basicConfig(filename='book_log.log', level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -74,7 +75,7 @@ def add_book():
         "entry_added": entry_added,
     })
     logging.info('New book added successfully')
-    save_books_to_csv()  # Збережемо книги у файл
+    save_books_to_csv_and_json()  # Збережемо книги у файл
 
 def random_book():
     logging.info('User selected to view a random book')
@@ -83,12 +84,21 @@ def random_book():
     print(f"'{random_book['name']}' by {random_book['author']} is {random_book['genre']} and has {random_book['pages']} pages")
     print("=" * 60)
 
-def save_books_to_csv():
-    logging.info('Saving books to CSV file')
-# додаєм параметр newline='' для уникнення додавання додаткових порожніх рядків між рядками даних у файлі CSV.
-# додаєм параметр encoding='utf-8' при відкритті файлу CSV, щоб забезпечити підтримку різних мов та спеціальних символів
-    with open('books.csv', 'w', newline='', encoding='utf-8') as file:    
+def save_books_to_csv_and_json():
+    logging.info('Saving books to CSV and JSON files')
+    # Збережемо книги у CSV
+    with open('books.csv', 'w', newline='', encoding='utf-8') as csv_file:    
         fieldnames = ["name", "author", "genre", "pages", "entry_added"]
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(BOOKS)
+
+    # Збережемо книги у JSON
+    json_books = []
+    for book in BOOKS:
+        # перетворення `datetime` атрибутів `entry_added` у POSIX timestamp
+        book['entry_added'] = book['entry_added'].timestamp()
+        json_books.append(book)
+
+    with open('books.json', 'w', encoding='utf-8') as json_file:
+        json.dump(json_books, json_file, ensure_ascii=False, indent=4)
