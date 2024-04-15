@@ -6,7 +6,7 @@ import csv
 import json
 
 # додамо логування
-logging.basicConfig(filename='book_log.log', level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(filename='book.log', level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 # Початкові дані про книги
 BOOKS = [
